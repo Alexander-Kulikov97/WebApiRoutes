@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using WebApiRoutes.Data.Repositories.Internals;
+using WebApiRoutes.Context.Internals;
 
-namespace WebApiRoutes.Data.Repositories
+namespace WebApiRoutes.Context
 {
     public class RepositoryBase : IRepository
     {
@@ -196,79 +196,6 @@ namespace WebApiRoutes.Data.Repositories
         int IReadonlyRepository.Count<T>(Expression<Func<T, bool>> predicate)
         {
             return DbSet<T>()?.Count(predicate) ?? 0;
-        }
-
-        async Task IInternalRepository.RemoveAsync<T>(Expression<Func<T, bool>> predicate)
-        {
-            var entityToRemove = await DbSet<T>().FirstOrDefaultAsync(predicate);
-            if (entityToRemove == null) return;
-            _context.RemoveRange(entityToRemove);
-        }
-
-        async Task IInternalRepository.RemoveAsync<T>(int id)
-        {
-            var entityToRemove = await DbSet<T>().FindAsync(id);
-            if (entityToRemove == null) return;
-            _context.RemoveRange(entityToRemove);
-        }
-
-        Task IInternalRepository.AddAsync<T>(T entity)
-        {
-            if (entity == null) throw new Exception("entity cannot be null");
-            return DbSet<T>()?.AddAsync(entity);
-        }
-
-        Task IInternalRepository.AddAsync<T>(List<T> entities)
-        {
-            if (entities == null) throw new Exception("entities cannot be null");
-            return DbSet<T>()?.AddRangeAsync(entities);
-        }
-
-        Task IInternalRepository.AddAsync<T>(IEnumerable<T> entities)
-        {
-            if (entities == null) throw new Exception("entities cannot be null");
-            return DbSet<T>()?.AddRangeAsync(entities);
-        }
-
-        Task IInternalRepository.AddAsync<T>(IQueryable<T> entities)
-        {
-            if (entities == null) throw new Exception("entities cannot be null");
-            return DbSet<T>()?.AddRangeAsync(entities);
-        }
-
-        async Task<IEnumerable<T>> IReadonlyRepository.AsEnumerableAsync<T>()
-        {
-            return await DbSet<T>().ToListAsync();
-        }
-
-        Task<List<T>> IReadonlyRepository.ToListAsync<T>()
-        {
-            return DbSet<T>().ToListAsync();
-        }
-
-        Task<T> IReadonlyRepository.FindAsync<T>(Expression<Func<T, bool>> predicate)
-        {
-            return DbSet<T>()?.FirstOrDefaultAsync(predicate);
-        }
-
-        Task<T> IReadonlyRepository.FindAsync<T>(int id)
-        {
-            return DbSet<T>()?.FindAsync(id);
-        }
-
-        Task<int> IReadonlyRepository.CountAsync<T>()
-        {
-            return DbSet<T>()?.CountAsync();
-        }
-
-        Task<bool> IReadonlyRepository.ExistsAsync<T>(Expression<Func<T, bool>> predicate)
-        {
-            return DbSet<T>()?.AnyAsync(predicate);
-        }
-
-        Task<T> IReadonlyRepository.FirstAsync<T>()
-        {
-            return DbSet<T>()?.FirstOrDefaultAsync();
         }
     }
 }

@@ -10,8 +10,8 @@ namespace WebApiRoutes.Core.Identity
 {
     public interface IAuthManager
     {
-        ResponseUser SignIn(string userName, string passWord);
+        ResponseData SignIn(string userName, string passWord);
 
-        ResponseUser Register(JObject data);
+        ResponseData Register(JObject data);
     }
 }

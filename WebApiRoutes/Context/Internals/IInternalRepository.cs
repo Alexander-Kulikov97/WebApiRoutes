@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
-namespace WebApiRoutes.Data.Repositories.Internals
+namespace WebApiRoutes.Context.Internals
 {
     /// <summary>
     ///     Data access layer for operations against the CMS Core database
@@ -104,48 +103,6 @@ namespace WebApiRoutes.Data.Repositories.Internals
         /// <typeparam name="T">The class defined as a DbSet in DbContext</typeparam>
         /// <param name="predicate">The predicate to match the entity</param>
         void Remove<T>(Expression<Func<T, bool>> predicate) where T : class;
-
-        /// <summary>
-        ///     Asynchronously removes matching elements in the DbSet of T
-        /// </summary>
-        /// <typeparam name="T">The class defined as a DbSet in DbContext</typeparam>
-        /// <param name="predicate">The predicate to match the entity</param>
-        Task RemoveAsync<T>(Expression<Func<T, bool>> predicate) where T : class;
-
-        /// <summary>
-        ///     Asynchronously removes matching elements in the DbSet of T
-        /// </summary>
-        /// <typeparam name="T">The class defined as a DbSet in DbContext</typeparam>
-        /// <param name="id">The entity id</param>
-        Task RemoveAsync<T>(int id) where T : class;
-
-        /// <summary>
-        ///     Asynchronously adds an element to the DbSet of T
-        /// </summary>
-        /// <typeparam name="T">The class defined as a DbSet in DbContext</typeparam>
-        /// <param name="entity">The entity to add</param>
-        Task AddAsync<T>(T entity) where T : class;
-
-        /// <summary>
-        ///     Asynchronously add a range of elements to the DbSet of T
-        /// </summary>
-        /// <typeparam name="T">The class defined as a DbSet in DbContext</typeparam>
-        /// <param name="entities">The entities to add</param>
-        Task AddAsync<T>(List<T> entities) where T : class;
-
-        /// <summary>
-        ///     Asynchronously add a range of elements to the DbSet of T
-        /// </summary>
-        /// <typeparam name="T">The class defined as a DbSet in DbContext</typeparam>
-        /// <param name="entities">The entities to add</param>
-        Task AddAsync<T>(IEnumerable<T> entities) where T : class;
-
-        /// <summary>
-        ///     Asynchronously add a range of elements to the DbSet of T
-        /// </summary>
-        /// <typeparam name="T">The class defined as a DbSet in DbContext</typeparam>
-        /// <param name="entities">The entities to add</param>
-        Task AddAsync<T>(IQueryable<T> entities) where T : class;
 
     }
 }

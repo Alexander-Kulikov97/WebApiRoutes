@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiRoutes.Models.Authentication;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Security.Claims;
 using Newtonsoft.Json.Linq;
 using WebApiRoutes.Core.Identity;
 
@@ -47,14 +43,13 @@ namespace WebApiRoutes.Controllers
                 if (model != null)
                 {
                     var authUser = _authManager.SignIn(model.Email, model.Password);
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(authUser.ClaimsIdentity));
-                    return Json(authUser.data);
+                    return Json(authUser, authUser?.Status);
                 }
                 return Json("Неверные данные", "ERROR");
             }
             catch (Exception ex)
             {
-                return Json(ex.StackTrace);
+                return Json(ex.Message, "ERROR");
             }
         }
 
@@ -85,33 +80,32 @@ namespace WebApiRoutes.Controllers
                 if (data != null)
                 {
                     var authUser = _authManager.Register(data);
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(authUser.ClaimsIdentity));
-                    return Json(authUser.data);
+                    return Json(authUser, authUser?.Status);
                 }
                 return Json("Неверные данные", "ERROR");
             }
             catch (Exception ex)
             {
-                return Json(ex.StackTrace);
+                return Json(ex.Message, "ERROR");
             }
         }
 
-        /// <summary>
-        /// Выход
-        /// </summary>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     GET /Todo
-        /// </remarks>
-        /// <param name="data"></param>
-        /// <response code="200"></response>
-        [Route("logout")]
-        [HttpGet]
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return Json("Signout success");
-        }
+        ///// <summary>
+        ///// Выход
+        ///// </summary>
+        ///// <remarks>
+        ///// Sample request:
+        /////
+        /////     GET /Todo
+        ///// </remarks>
+        ///// <param name="data"></param>
+        ///// <response code="200"></response>
+        //[Route("logout")]
+        //[HttpGet]
+        //public async Task<IActionResult> Logout()
+        //{
+        //    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        //    return Json("Signout success");
+        //}
     }
 }

@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <Reference Include="WebApiRoutes.Data">
-      <HintPath>..\WebApiRoutes.Core\bin\Debug\netcoreapp2.1\WebApiRoutes.Data.dll</HintPath>
+      <HintPath>..\WebApiRoutes.Data\bin\Debug\netcoreapp2.1\WebApiRoutes.Data.dll</HintPath>
     </Reference>
   </ItemGroup>
 

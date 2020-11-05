@@ -1,16 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiRoutes.Data.Context;
 using WebApiRoutes.Data.Repositories;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Linq;
 using WebApiRoutes.Core.Models;
 using Newtonsoft.Json.Linq;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
 
 namespace WebApiRoutes.Core.Identity
 {
@@ -26,7 +25,7 @@ namespace WebApiRoutes.Core.Identity
             _passwordHasher = new Hasher();
         }
 
-        public ResponseUser SignIn(string email, string passWord)
+        public ResponseData SignIn(string email, string passWord)
         {
 
             var user = db.FirstOrDefault<UserModel>(w => w.email == email);
@@ -39,36 +38,34 @@ namespace WebApiRoutes.Core.Identity
                 {
                     var authUser = Authenticate(user.email);
 
-                    var response = new ResponseUser
+                    var response = new ResponseData
                     {
-                        ClaimsIdentity = authUser,
-                        data = new ResponseData
+                        AccessToken = authUser,
+                        Status = "OK",
+                        Message = "Авторизован",
+                        User = new LoginModel
                         {
-                            Status = "success",
-                            User = new LoginModel
-                            {
-                                Id = user.id,
-                                Email = user.email,
-                                Login = user.login,
-                                FirstName = user.first_name,
-                                LastName = user.last_name,
-                                MiddleName = user.middle_name
-                            }
+                            Id = user.id,
+                            Email = user.email,
+                            Login = user.login,
+                            FirstName = user.first_name,
+                            LastName = user.last_name,
+                            MiddleName = user.middle_name
                         }
                     };
 
                     return response;
                 }
 
-                return new ResponseUser { data = new ResponseData { Status = "ERROR", Message = "Неверный логин или пароль" } };
+                return new ResponseData { Status = "ERROR", Message = "Неверный логин или пароль" };
             }
             else
             {
-                return new ResponseUser { data = new ResponseData { Status = "ERROR", Message = "Пользователь не найден" } };
+                return new ResponseData { Status = "ERROR", Message = "Пользователь не найден" };
             }
         }
 
-        public ResponseUser Register(JObject data)
+        public ResponseData Register(JObject data)
         {
             var model = data.ToObject<RegisterModel>();
             if (model != null)
@@ -92,40 +89,51 @@ namespace WebApiRoutes.Core.Identity
 
                     var authUser = Authenticate(model.Email);
 
-                    var response = new ResponseUser
+                    var response = new ResponseData
                     {
-                        ClaimsIdentity = authUser,
-                        data = new ResponseData
+                        AccessToken = authUser,
+                        Status = "OK",
+                        Message = "Пользователь зарегистрирован",
+                        User = new LoginModel
                         {
-                            Status = "success",
-                            User = new LoginModel
-                            {
-                                Email = model.Email,
-                                Login = model.Login,
-                                FirstName = model.FirstName,
-                                LastName = model.LastName,
-                                MiddleName = model.MiddleName
-                            }
+                            Email = model.Email,
+                            Login = model.Login,
+                            FirstName = model.FirstName,
+                            LastName = model.LastName,
+                            MiddleName = model.MiddleName
                         }
                     };
 
                     return response;
                 }
                 else
-                    return new ResponseUser { data = new ResponseData { Status = "ERROR", Message = "Данный пользователь уже зарегистрирован" } };
+                    return new ResponseData { Status = "ERROR", Message = "Данный пользователь уже зарегистрирован" };
             }
-            return new ResponseUser { data = new ResponseData { Status = "ERROR", Message = "Неверные данные" } };
+            return new ResponseData { Status = "ERROR", Message = "Неверные данные" };
         }
 
-        private ClaimsIdentity Authenticate(string userName)
+        private string Authenticate(string userName)
         {
-            // создаем один claim
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
             };
-            // создаем объект ClaimsIdentity
-            return new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+            ClaimsIdentity claimsIdentity =
+            new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+                ClaimsIdentity.DefaultRoleClaimType);
+
+            var now = DateTime.UtcNow;
+
+            var jwt = new JwtSecurityToken(
+                    issuer: AuthOptions.ISSUER,
+                    audience: AuthOptions.AUDIENCE,
+                    notBefore: now,
+                    claims: claimsIdentity.Claims,
+                    expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
+                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            return encodedJwt;
         }
     }
 }

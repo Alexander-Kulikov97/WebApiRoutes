@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net;
+using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiRoutes.App_Code;
 
@@ -6,31 +8,18 @@ namespace WebApiRoutes.Controllers
 {
     public class BaseController : Controller
     {
-        protected virtual IActionResult Json<T>(T data, string statusCode = "")
+        protected virtual JsonResult Json<T>(T data, int statusCode)
         {
             try
             {
                 BaseResponse<T> baseResponse = new BaseResponse<T>
                 {
-                    Status = string.IsNullOrEmpty(statusCode) ? App_Code.StatusCode.SUCCESS : statusCode,
                     Data = data
                 };
 
-                if (baseResponse.Status == App_Code.StatusCode.SUCCESS)
-                {
-                    Response.StatusCode = 200;
-                }
-                else if (baseResponse.Status == App_Code.StatusCode.NON_HANDLED_ERROR)
-                {
-                    Response.StatusCode = 500;
-                }
-                else
-                {
-                    Response.StatusCode = 400;
-                }
+                Response.StatusCode = statusCode;
 
-                JsonResult a = base.Json(baseResponse);
-                return a;
+                return base.Json(baseResponse);
             }
             catch (Exception ex)
             {

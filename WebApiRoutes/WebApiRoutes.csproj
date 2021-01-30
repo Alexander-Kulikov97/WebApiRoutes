@@ -5,6 +5,9 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
     <UserSecretsId>903fc381-2a02-4180-a1ac-ff4bb5121fea</UserSecretsId>
+    <Platforms>AnyCPU;x64</Platforms>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,20 +20,25 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.78" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NLog" Version="4.7.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="StorageServices">
+      <HintPath>..\StorageServices\bin\Debug\netcoreapp2.1\StorageServices.dll</HintPath>
+    </Reference>
+    <Reference Include="StorageServices.Contracts">
+      <HintPath>..\StorageServices.Contracts\bin\Debug\netcoreapp2.1\StorageServices.Contracts.dll</HintPath>
+    </Reference>
     <Reference Include="WebApiRoutes.Core">
       <HintPath>..\WebApiRoutes.Core\bin\Debug\netcoreapp2.1\WebApiRoutes.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="WebApiRoutes.Data">
-      <HintPath>..\WebApiRoutes.Data\bin\Debug\netcoreapp2.1\WebApiRoutes.Data.dll</HintPath>
     </Reference>
   </ItemGroup>
 

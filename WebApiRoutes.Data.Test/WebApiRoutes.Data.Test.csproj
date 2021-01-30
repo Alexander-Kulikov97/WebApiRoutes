@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WebApiRoutes.Core.Test\WebApiRoutes.Core.Test.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="WebApiRoutes.Data">
       <HintPath>..\WebApiRoutes.Data\bin\Debug\netcoreapp2.1\WebApiRoutes.Data.dll</HintPath>
     </Reference>

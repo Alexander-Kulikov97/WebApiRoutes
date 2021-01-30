@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using StoregeServices.Contracts.Models;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -10,8 +11,10 @@ namespace WebApiRoutes.Core.Identity
 {
     public interface IAuthManager
     {
-        ResponseData SignIn(string userName, string passWord);
+        AuthUser SignIn(string userName, string passWord);
 
-        ResponseData Register(JObject data);
+        AuthUser Register(JObject data);
+
+        List<UserModel> GetAllUsers();
     }
 }

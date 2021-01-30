@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using StoregeServices.Contracts.Repositories;
 using System;
 
-namespace WebApiRoutes.Data.Repositories
+namespace StoregeServices.Repositories
 {
     /// <summary>
     /// Dependency injection extensions of IServiceCollection for IRepository and DbContext

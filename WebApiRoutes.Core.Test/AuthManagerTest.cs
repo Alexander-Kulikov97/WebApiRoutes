@@ -1,22 +1,24 @@
 using WebApiRoutes.Core.Identity;
 using Xunit;
 using WebApiRoutes.Data.Repositories;
-using WebApiRoutes.Core.Test.FakeDB;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore;
+using System.Net.Http;
+using Newtonsoft.Json;
+using WebApiRoutes.Core.Test.Models;
+using System.Net;
 
 namespace WebApiRoutes.Core.Test
 {
     public class AuthManagerTest
     {
         private readonly IHasher _passwordHasher;
-        private readonly IRepository _repository;
-        private readonly IAuthManager _authManager;
+
         public AuthManagerTest()
         {
             _passwordHasher = new Hasher();
-            var _context = DbInitializer.CreateFakeDatabase();
-            _repository = new RepositoryBase(_context);
-            _authManager = new AuthManager(_repository);
         }
+
 
         [Fact]
         public void HashCreateAndVerifyPassword_TrueReturn_Test()

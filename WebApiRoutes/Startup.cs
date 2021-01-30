@@ -15,10 +15,15 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using StorageService.Contracts.Auth;
+using StorageServices.Contracts.Driver;
+using StorageServices.Driver;
+using StoregeServices.Auth;
+using StoregeServices.Context;
+using StoregeServices.Repositories;
+using WebApiRoutes.Core.Drivers;
 using WebApiRoutes.Core.Identity;
 using WebApiRoutes.Core.Models;
-using WebApiRoutes.Data.Context;
-using WebApiRoutes.Data.Repositories;
 
 
 namespace WebApiRoutes
@@ -33,12 +38,13 @@ namespace WebApiRoutes
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public virtual void ConfigureServices(IServiceCollection services)
         {
             services.AddRepositoryWithDbContext<SqlDbContext>(builder =>
             {
                 builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
+
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
@@ -66,6 +72,10 @@ namespace WebApiRoutes
                     });
 
             services.AddTransient<IAuthManager, AuthManager>();
+            services.AddTransient<IUserServices, UserServices>();
+
+            services.AddTransient<IDriversManager, DriversManager>();
+            services.AddTransient<IDriverServices, DriverServices>();
 
             services.AddCors();
 
@@ -80,8 +90,8 @@ namespace WebApiRoutes
                     Description = "WebApi",
                     Contact = new OpenApiContact
                     {
-                        Name = "Alexander Kulikov",
-                        Email = "alexander.kulikov97@yandex.ru",
+                        //Name = "Alexander Kulikov",
+                        //Email = "alexander.kulikov97@yandex.ru",
                     }
                 });
 
@@ -92,7 +102,7 @@ namespace WebApiRoutes
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {

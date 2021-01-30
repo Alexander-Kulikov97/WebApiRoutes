@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,13 +19,13 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Core" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="WebApiRoutes.Data">
-      <HintPath>..\WebApiRoutes.Data\bin\Debug\netcoreapp2.1\WebApiRoutes.Data.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\StorageServices.Contracts\StorageServices.Contracts.csproj" />
+    <ProjectReference Include="..\StorageServices\StorageServices.csproj" />
   </ItemGroup>
 
 </Project>

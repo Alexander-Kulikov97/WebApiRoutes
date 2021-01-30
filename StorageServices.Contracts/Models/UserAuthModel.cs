@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace WebApiRoutes.Core.Models
+namespace StoregeServices.Contracts.Models
 {
-    public class LoginModel
+    public class UserAuthModel
     {
         public int Id { get; set; }
 
@@ -20,5 +17,9 @@ namespace WebApiRoutes.Core.Models
         public string Email { get; set; }
 
         public string Login { get; set; }
+
+        public string Password { get; set; }
+
+        public string Role { get; set; }
     }
 }

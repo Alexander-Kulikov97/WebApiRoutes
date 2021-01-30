@@ -24,13 +24,4 @@ namespace WebApiRoutes.App_Code
         public string Message;
     }
 
-    /// <summary>
-    /// Статусы
-    /// </summary>
-    public class StatusCode
-    {
-        public const string SUCCESS = "OK";
-        public const string ERROR = "ERROR";
-        public const string NON_HANDLED_ERROR = "NON_HANDLED_ERROR";
-    }
 }

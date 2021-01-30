@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebApiRoutes.Models.Authentication;
 using Newtonsoft.Json.Linq;
 using WebApiRoutes.Core.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApiRoutes.Controllers
 {
@@ -39,17 +40,19 @@ namespace WebApiRoutes.Controllers
         {
             try
             {
+                
                 var model = data.ToObject<LoginModel>();
                 if (model != null)
                 {
                     var authUser = _authManager.SignIn(model.Email, model.Password);
-                    return Json(authUser, authUser?.Status);
+                    
+                    return Json(authUser, 200);
                 }
-                return Json("Неверные данные", "ERROR");
+                return Json("Неверные данные", 400);
             }
             catch (Exception ex)
             {
-                return Json(ex.Message, "ERROR");
+                return Json(ex.Message, 500);
             }
         }
 
@@ -80,14 +83,28 @@ namespace WebApiRoutes.Controllers
                 if (data != null)
                 {
                     var authUser = _authManager.Register(data);
-                    return Json(authUser, authUser?.Status);
+                    return Json(authUser, 200);
                 }
-                return Json("Неверные данные", "ERROR");
+                return Json("Неверные данные", 400);
             }
             catch (Exception ex)
             {
-                return Json(ex.Message, "ERROR");
+                return Json(ex.Message, 500);
             }
+        }
+
+        /// <summary>
+        /// Получить всех пользователей
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <response code="200"></response>
+        [Authorize(Roles = "admin")]
+        [Route("getusers")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            return Json(_authManager.GetAllUsers());
         }
 
         ///// <summary>

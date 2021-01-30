@@ -4,20 +4,20 @@ using System.Text;
 
 namespace WebApiRoutes.Core.Test.Models
 {
-    public class User
+    public class UserModel
     {
-        public int Id { get; set; }
+        public int id { get; set; }
 
-        public string FirstName { get; set; }
+        public string first_name { get; set; }
 
-        public string LastName { get; set; }
+        public string last_name { get; set; }
 
-        public string MiddleName { get; set; }
+        public string middle_name { get; set; }
 
-        public string Email { get; set; }
+        public string email { get; set; }
 
-        public string Login { get; set; }
+        public string password { get; set; }
 
-        public string Password { get; set; }
+        public string login { get; set; }
     }
 }

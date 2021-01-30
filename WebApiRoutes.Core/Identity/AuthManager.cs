@@ -1,122 +1,133 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using WebApiRoutes.Data.Context;
-using WebApiRoutes.Data.Repositories;
-using System.Linq;
 using WebApiRoutes.Core.Models;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
+using StorageService.Contracts.Auth;
+using StoregeServices.Contracts.Models;
+using System.Linq;
 
 namespace WebApiRoutes.Core.Identity
 {
     public class AuthManager : IAuthManager
     {
 
-        private readonly IRepository db;
+        private readonly IUserServices _userServices;
         private readonly IHasher _passwordHasher;
 
-        public AuthManager(IRepository context)
+        public AuthManager(IUserServices userServices)
         {
-            db = context;
+            _userServices = userServices;
             _passwordHasher = new Hasher();
         }
 
-        public ResponseData SignIn(string email, string passWord)
+        public AuthUser SignIn(string email, string passWord)
         {
+            var user = _userServices.GetLoginUser(email);
 
-            var user = db.FirstOrDefault<UserModel>(w => w.email == email);
-
-            if(user != null) 
+            if (user == null)
             {
-                var verifyPass = _passwordHasher.VerifyHashedPassword(user.password, passWord);
+                return new AuthUser { Message = "Пользователь не найден" };
+            }
 
-                if (verifyPass)
+            var verifyPass = _passwordHasher.VerifyHashedPassword(user.Password, passWord);
+
+            if (!verifyPass)
+            {
+                return new AuthUser { Message = "Неверный логин или пароль" };
+            }
+                
+            var authUser = Authenticate(user.Email, user.Role);
+
+            return new AuthUser
+            {
+                AccessToken = authUser,
+                Message = "Авторизован",
+                User = new UserModel
                 {
-                    var authUser = Authenticate(user.email);
-
-                    var response = new ResponseData
-                    {
-                        AccessToken = authUser,
-                        Status = "OK",
-                        Message = "Авторизован",
-                        User = new LoginModel
-                        {
-                            Id = user.id,
-                            Email = user.email,
-                            Login = user.login,
-                            FirstName = user.first_name,
-                            LastName = user.last_name,
-                            MiddleName = user.middle_name
-                        }
-                    };
-
-                    return response;
+                    Id = user.Id,
+                    Email = user.Email,
+                    Login = user.Login,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    MiddleName = user.MiddleName,
                 }
-
-                return new ResponseData { Status = "ERROR", Message = "Неверный логин или пароль" };
-            }
-            else
-            {
-                return new ResponseData { Status = "ERROR", Message = "Пользователь не найден" };
-            }
+            };
         }
 
-        public ResponseData Register(JObject data)
+        public AuthUser Register(JObject data)
         {
             var model = data.ToObject<RegisterModel>();
-            if (model != null)
+            if (model == null)
             {
-                UserModel user = db.FirstOrDefault<UserModel>(w => w.email == model.Email);
-                if (user == null)
-                {
-                    var hashPassword = _passwordHasher.HashPassword(model.Password);
-                    // добавляем пользователя в бд
-                    db.Add<UserModel>(new UserModel
-                    {
-                        email = model.Email,
-                        password = hashPassword,
-                        first_name = model.FirstName,
-                        last_name = model.LastName,
-                        middle_name = model.MiddleName,
-                        login = model.Login
-                    });
-
-                    db.SaveChangesAsync();
-
-                    var authUser = Authenticate(model.Email);
-
-                    var response = new ResponseData
-                    {
-                        AccessToken = authUser,
-                        Status = "OK",
-                        Message = "Пользователь зарегистрирован",
-                        User = new LoginModel
-                        {
-                            Email = model.Email,
-                            Login = model.Login,
-                            FirstName = model.FirstName,
-                            LastName = model.LastName,
-                            MiddleName = model.MiddleName
-                        }
-                    };
-
-                    return response;
-                }
-                else
-                    return new ResponseData { Status = "ERROR", Message = "Данный пользователь уже зарегистрирован" };
+                return new AuthUser { Message = "Неверные данные" };
             }
-            return new ResponseData { Status = "ERROR", Message = "Неверные данные" };
+
+            var user = _userServices.GetLoginUser(model.Email);
+            if (user != null)
+            {
+                return new AuthUser { Message = "Данный пользователь уже зарегистрирован" };
+            }
+
+            var hashPassword = _passwordHasher.HashPassword(model.Password);
+
+
+            _userServices.CreateUser(new UserAuthModel
+            {
+                Email = model.Email,
+                Password = hashPassword,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                MiddleName = model.MiddleName,
+                Login = model.Login,
+                Role = "guest",
+            });
+
+
+            var authUser = Authenticate(model.Email, "guest");
+
+            return new AuthUser
+            {
+                AccessToken = authUser,
+                Message = "Пользователь зарегистрирован",
+                User = new UserModel
+                {
+                    Email = model.Email,
+                    Login = model.Login,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    MiddleName = model.MiddleName,
+                }
+            };         
         }
 
-        private string Authenticate(string userName)
+        public List<UserModel> GetAllUsers()
+        {
+            var users = _userServices.GetAllUsers();
+            var result = new UserModel();
+
+            if (users.Count == 0)
+                return null;
+
+            return users.Select(s => new UserModel
+            {
+                Id = s.Id,
+                Email = s.Email,
+                FirstName = s.FirstName,
+                LastName = s.LastName,
+                MiddleName = s.MiddleName,
+                Login = s.Login,
+            }).ToList();
+        }
+
+        private string Authenticate(string userName, string role)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, userName),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, role),
             };
             ClaimsIdentity claimsIdentity =
             new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
@@ -131,9 +142,7 @@ namespace WebApiRoutes.Core.Identity
                     claims: claimsIdentity.Claims,
                     expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
                     signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-            return encodedJwt;
+            return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
     }
 }

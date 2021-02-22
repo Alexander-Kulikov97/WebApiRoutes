@@ -19,5 +19,7 @@ namespace WebApiRoutes.Core.Models
 
         public string Login { get; set; }
 
+        public Guid RoleId { get; set; }
+
     }
 }

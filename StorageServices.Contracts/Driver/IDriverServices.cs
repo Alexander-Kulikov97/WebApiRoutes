@@ -10,5 +10,7 @@ namespace StorageServices.Contracts.Driver
         List<DriverInfoModel> GetAllDrivers();
 
         void AddDriverInfo(DriverInfoModel model);
+
+        DriverInfoModel GetDriverById(int id);
     }
 }

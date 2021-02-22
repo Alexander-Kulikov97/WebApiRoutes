@@ -1,5 +1,6 @@
 ﻿using StorageServices.Contracts.Models;
 using StoregeServices.Contracts.Models;
+using System;
 using System.Collections.Generic;
 
 namespace StorageService.Contracts.Auth
@@ -13,5 +14,7 @@ namespace StorageService.Contracts.Auth
         List<UserAuthModel> GetAllUsers();
 
         UserModel GetUserById(int id);
+
+        void UpdateUserRole(int userId, Guid roleId);
     }
 }

@@ -17,14 +17,16 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StorageService.Contracts.Auth;
 using StorageServices.Contracts.Driver;
+using StorageServices.Contracts.Roles;
 using StorageServices.Driver;
+using StorageServices.Roles;
 using StoregeServices.Auth;
 using StoregeServices.Context;
 using StoregeServices.Repositories;
 using WebApiRoutes.Core.Drivers;
 using WebApiRoutes.Core.Identity;
 using WebApiRoutes.Core.Models;
-
+using WebApiRoutes.Core.Role;
 
 namespace WebApiRoutes
 {
@@ -76,6 +78,9 @@ namespace WebApiRoutes
 
             services.AddTransient<IDriversManager, DriversManager>();
             services.AddTransient<IDriverServices, DriverServices>();
+
+            services.AddTransient<IRoleManager, RoleManager>();
+            services.AddTransient<IRolesServices, RolesServices>();
 
             services.AddCors();
 

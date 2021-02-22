@@ -43,7 +43,15 @@ namespace WebApiRoutes.Core.Drivers
                 throw new Exception("Пользователь не найден");
             }
 
+            var driver = _driverServices.GetDriverById(model.Id);
+
+            if(driver != null)
+            {
+                throw new Exception("Водитель уже существут в БД");
+            }
+
             _driverServices.AddDriverInfo(model);
+            _userServices.UpdateUserRole(model.Id, Guid.Parse("e0528690-e98f-480b-ab63-e0d9b81b2b11"));
 
         }
     }

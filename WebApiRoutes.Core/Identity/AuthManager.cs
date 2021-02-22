@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using StorageService.Contracts.Auth;
 using StoregeServices.Contracts.Models;
 using System.Linq;
+using StorageServices.Contracts.Roles;
 
 namespace WebApiRoutes.Core.Identity
 {
@@ -16,11 +17,13 @@ namespace WebApiRoutes.Core.Identity
 
         private readonly IUserServices _userServices;
         private readonly IHasher _passwordHasher;
+        private readonly IRolesServices _rolesServices;
 
-        public AuthManager(IUserServices userServices)
+        public AuthManager(IUserServices userServices, IRolesServices rolesServices)
         {
             _userServices = userServices;
             _passwordHasher = new Hasher();
+            _rolesServices = rolesServices;
         }
 
         public AuthUser SignIn(string email, string passWord)
@@ -38,9 +41,11 @@ namespace WebApiRoutes.Core.Identity
             {
                 return new AuthUser { Message = "Неверный логин или пароль" };
             }
-                
-            var authUser = Authenticate(user.Email, user.Role);
 
+            var role = _rolesServices.GetRoleById(user.RoleId);
+
+            var authUser = Authenticate(user.Email, role.Name);
+            
             return new AuthUser
             {
                 AccessToken = authUser,
@@ -53,6 +58,7 @@ namespace WebApiRoutes.Core.Identity
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     MiddleName = user.MiddleName,
+                    RoleId = user.RoleId,
                 }
             };
         }
@@ -82,7 +88,7 @@ namespace WebApiRoutes.Core.Identity
                 LastName = model.LastName,
                 MiddleName = model.MiddleName,
                 Login = model.Login,
-                Role = "guest",
+                RoleId = Guid.Parse("18A0659D-DF47-4C49-B727-0264B81E83E0"),
             });
 
 
@@ -99,6 +105,7 @@ namespace WebApiRoutes.Core.Identity
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     MiddleName = model.MiddleName,
+                    RoleId = Guid.Parse("18A0659D-DF47-4C49-B727-0264B81E83E0"),
                 }
             };         
         }
@@ -119,6 +126,7 @@ namespace WebApiRoutes.Core.Identity
                 LastName = s.LastName,
                 MiddleName = s.MiddleName,
                 Login = s.Login,
+                RoleId = s.RoleId,
             }).ToList();
         }
 

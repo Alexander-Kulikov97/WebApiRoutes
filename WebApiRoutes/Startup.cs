@@ -20,6 +20,7 @@ using StorageServices.Contracts.Driver;
 using StorageServices.Contracts.Roles;
 using StorageServices.Driver;
 using StorageServices.Roles;
+using StorageServices.Routes;
 using StoregeServices.Auth;
 using StoregeServices.Context;
 using StoregeServices.Repositories;
@@ -27,6 +28,7 @@ using WebApiRoutes.Core.Drivers;
 using WebApiRoutes.Core.Identity;
 using WebApiRoutes.Core.Models;
 using WebApiRoutes.Core.Role;
+using WebApiRoutes.Core.Routes;
 
 namespace WebApiRoutes
 {
@@ -81,6 +83,9 @@ namespace WebApiRoutes
 
             services.AddTransient<IRoleManager, RoleManager>();
             services.AddTransient<IRolesServices, RolesServices>();
+
+            services.AddTransient<IRoutesServices, RoutesServices>();
+            services.AddTransient<IRoutesManager, RoutesManager>();
 
             services.AddCors();
 

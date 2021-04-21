@@ -41,7 +41,7 @@ namespace StorageServices.Routes
             var sb = new StringBuilder();
 
             var lat = model.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture);
-            var lng = model.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            var lng = model.Lng.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
             sb.Append("declare @Id uniqueidentifier set @Id = NEWID()" );
             sb.Append("INSERT INTO [dbo].[t_point] (id_point, [id_route], [lat], [lng], [speed]) VALUES(");

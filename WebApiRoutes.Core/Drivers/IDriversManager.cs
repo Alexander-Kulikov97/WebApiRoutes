@@ -10,5 +10,11 @@ namespace WebApiRoutes.Core.Drivers
         List<DriverInfoModel> GetAllDrivers();
 
         void AddDriver(DriverInfoModel model);
+
+        DriverInfoModel GetDriver(int id);
+
+        void SetStatusDriver(int id, string status);
+
+        string GetStatusDriver(int id);
     }
 }

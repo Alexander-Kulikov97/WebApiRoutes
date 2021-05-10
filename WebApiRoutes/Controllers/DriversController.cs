@@ -73,5 +73,67 @@ namespace WebApiRoutes.Controllers
                 return Json(ex.Message, 500);
             }
         }
+
+        /// <summary>
+        /// Получить водителя по ID
+        /// </summary>
+        /// <response code="200"></response>
+        //[Authorize(Roles = "admin")]
+        [Route("getdriver/{id}")]
+        [HttpPost]
+        public IActionResult GetdriverById(int id)
+        {
+            try
+            {
+                var driver = _driversManager.GetDriver(id);
+
+                return Json(driver);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message, 500);
+            }
+        }
+
+        /// <summary>
+        /// Получить статус водителя по ID
+        /// </summary>
+        /// <response code="200"></response>
+        //[Authorize(Roles = "admin")]
+        [Route("getstatusdriver/{id}")]
+        [HttpPost]
+        public IActionResult GetStatusdriverById(int id)
+        {
+            try
+            {
+                var driver = _driversManager.GetStatusDriver(id);
+
+                return Json(driver);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message, 500);
+            }
+        }
+
+        /// <summary>
+        /// Установить статус водителя
+        /// </summary>
+        /// <response code="200"></response>
+        //[Authorize(Roles = "admin")]
+        [Route("{id}/setstatusdriver/{status}")]
+        [HttpPost]
+        public IActionResult SetStatusDriver(int id, string status)
+        {
+            try
+            {
+                _driversManager.SetStatusDriver(id, status);
+                return Json("Статус установлен", 200);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message, 500);
+            }
+        }
     }
 }

@@ -54,5 +54,25 @@ namespace WebApiRoutes.Core.Drivers
             _userServices.UpdateUserRole(model.Id, Guid.Parse("e0528690-e98f-480b-ab63-e0d9b81b2b11"));
 
         }
+
+        public DriverInfoModel GetDriver(int id)
+        {
+            return _driverServices.GetDriverById(id);
+        }
+
+        public void SetStatusDriver(int id, string status)
+        {
+            if (string.IsNullOrEmpty(status))
+            {
+                throw new Exception("Неверный статус");
+            }
+
+            _driverServices.SetStatusDriverById(id, status);
+        }
+
+        public string GetStatusDriver(int id)
+        {
+            return _driverServices.GetStatusDriver(id);
+        }
     }
 }

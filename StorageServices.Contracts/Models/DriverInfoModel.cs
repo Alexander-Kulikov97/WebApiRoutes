@@ -14,5 +14,7 @@ namespace StorageServices.Contracts.Models
         /// Тип ТС
         /// </summary>
         public string VehicleType { get; set; }
+
+        public string Status { get; set; }
     }
 }

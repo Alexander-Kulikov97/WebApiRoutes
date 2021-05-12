@@ -107,6 +107,35 @@ namespace WebApiRoutes.Controllers
             return Json(_authManager.GetAllUsers());
         }
 
+        /// <summary>
+        /// Установить онлайн
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <response code="200"></response>
+        //[Authorize(Roles = "admin")]
+        [Route("{userId}/setonline/{isOnline}")]
+        [HttpGet]
+        public async Task<IActionResult> SetOnline(int userId, bool isOnline)
+        {
+            _authManager.SetOnline(userId, isOnline);
+            return Json("online установлен", 200);
+        }
+
+        /// <summary>
+        /// Получить статус онлайна
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <response code="200"></response>
+        //[Authorize(Roles = "admin")]
+        [Route("IsOnline/{userId}")]
+        [HttpGet]
+        public async Task<IActionResult> IsOnline(int userId)
+        {
+            return Json(_authManager.IsOnline(userId));
+        }
+
         ///// <summary>
         ///// Выход
         ///// </summary>

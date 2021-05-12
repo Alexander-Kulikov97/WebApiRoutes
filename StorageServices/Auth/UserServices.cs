@@ -48,5 +48,20 @@ namespace StoregeServices.Auth
             var sql = $"UPDATE [dbo].[t_user] SET[role_id] = '{roleId}' WHERE Id = {userId}";
             _db.Execute(sql, null, CommandType.Text);
         }
+
+        public void UpdateUserOnline(int userId, bool isOnline)
+        {
+            var sqlBool = (isOnline == true)
+                ? 1
+                : 0;
+            var sql = $"UPDATE [dbo].[t_user] SET[is_online] = {sqlBool} WHERE Id = {userId}";
+            _db.Execute(sql, null, CommandType.Text);
+        }
+
+        public bool? GetUserOnline(int userId)
+        {
+            var sql = $"SELECT [is_online] FROM [t_user] WHERE Id = {userId}";
+            return _db.Get<bool?>(sql, null, CommandType.Text);
+        }
     }
 }

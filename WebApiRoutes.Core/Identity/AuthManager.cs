@@ -130,6 +130,16 @@ namespace WebApiRoutes.Core.Identity
             }).ToList();
         }
 
+        public bool? IsOnline(int userId)
+        {
+            return _userServices.GetUserOnline(userId);
+        }
+
+        public void SetOnline(int userId, bool isOnline)
+        {
+            _userServices.UpdateUserOnline(userId, isOnline);
+        }
+
         private string Authenticate(string userName, string role)
         {
             var claims = new List<Claim>

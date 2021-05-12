@@ -16,5 +16,9 @@ namespace WebApiRoutes.Core.Identity
         AuthUser Register(JObject data);
 
         List<UserModel> GetAllUsers();
+
+        bool? IsOnline(int userId);
+
+        void SetOnline(int userId, bool isOnline);
     }
 }

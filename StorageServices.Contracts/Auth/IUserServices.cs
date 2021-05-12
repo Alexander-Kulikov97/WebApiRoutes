@@ -16,5 +16,9 @@ namespace StorageService.Contracts.Auth
         UserModel GetUserById(int id);
 
         void UpdateUserRole(int userId, Guid roleId);
+
+        void UpdateUserOnline(int userId, bool isOnline);
+
+        bool? GetUserOnline(int userId);
     }
 }

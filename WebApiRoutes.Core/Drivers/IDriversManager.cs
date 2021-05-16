@@ -16,5 +16,7 @@ namespace WebApiRoutes.Core.Drivers
         void SetStatusDriver(int id, string status);
 
         string GetStatusDriver(int id);
+
+        void SetTimeSecondsDriver(int id, int timeSeconds);
     }
 }

@@ -16,5 +16,7 @@ namespace StorageServices.Contracts.Driver
         void SetStatusDriverById(int id, string status);
 
         string GetStatusDriver(int id);
+
+        void SetTimeSecondsDriver(int id, int timeSeconds);
     }
 }

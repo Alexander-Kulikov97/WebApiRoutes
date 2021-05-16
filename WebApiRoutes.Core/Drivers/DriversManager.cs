@@ -74,5 +74,10 @@ namespace WebApiRoutes.Core.Drivers
         {
             return _driverServices.GetStatusDriver(id);
         }
+
+        public void SetTimeSecondsDriver(int id, int timeSeconds)
+        {
+            _driverServices.SetTimeSecondsDriver(id, timeSeconds);
+        }
     }
 }

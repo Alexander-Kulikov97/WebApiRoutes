@@ -135,5 +135,25 @@ namespace WebApiRoutes.Controllers
                 return Json(ex.Message, 500);
             }
         }
+
+        /// <summary>
+        /// Установить время в пути
+        /// </summary>
+        /// <response code="200"></response>
+        //[Authorize(Roles = "admin")]
+        [Route("{id}/timesecondsdriver/{timeSeconds}")]
+        [HttpPost]
+        public IActionResult SetTimeSecondsDriver(int id, int timeSeconds)
+        {
+            try
+            {
+                _driversManager.SetTimeSecondsDriver(id, timeSeconds);
+                return Json("Статус установлен", 200);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message, 500);
+            }
+        }
     }
 }

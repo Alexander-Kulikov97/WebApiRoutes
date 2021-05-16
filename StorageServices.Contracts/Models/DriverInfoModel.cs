@@ -16,5 +16,7 @@ namespace StorageServices.Contracts.Models
         public string VehicleType { get; set; }
 
         public string Status { get; set; }
+
+        public int? TimeSeconds { get; set; }
     }
 }

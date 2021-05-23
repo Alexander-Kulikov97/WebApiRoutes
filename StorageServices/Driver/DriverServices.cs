@@ -20,7 +20,7 @@ namespace StorageServices.Driver
         public List<DriverInfoModel> GetAllDrivers()
         {
             return _db.GetAll<DriverInfoModel>($"SELECT u.Id as Id, first_name as FirstName, last_name as LastName, middle_name as MiddleName" +
-                $", email as Email, login as Login, d.vehiclenumber as VehicleNumber, d.vehicletype as VehicleType, d.timeSeconds as TimeSeconds " +
+                $", email as Email, login as Login, d.vehiclenumber as VehicleNumber, d.vehicletype as VehicleType, d.timeSeconds as TimeSeconds, d.status as Status " +
                 $"FROM t_user u join t_drivers d on u.Id = d.userId", null, CommandType.Text);
         }
 
